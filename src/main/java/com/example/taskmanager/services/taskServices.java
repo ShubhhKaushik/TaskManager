@@ -3,19 +3,22 @@ package com.example.taskmanager.services;
 import com.example.taskmanager.entities.taskEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 @Service
 public class taskServices {
     private static ArrayList<taskEntity> tasks = new ArrayList<>();
     private static int taskid = 1;
+    private static SimpleDateFormat deadLineFormatter = new SimpleDateFormat("YYYY-MM-dd");
 
-    public static taskEntity addTask(String title, String description, String deadline) {
+    public static taskEntity addTask(String title, String description, String deadline) throws ParseException {
         taskEntity task = new taskEntity();
         task.setId(taskid++);
         task.setTitle(title);
         task.setDescription(description);
-        task.setDeadline(deadline);
+        task.setDeadline(deadLineFormatter.parse(deadline));
         task.setCompleted(false);
         tasks.add(task);
         return task;

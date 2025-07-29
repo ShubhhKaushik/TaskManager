@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class taskController {
     }
 
     @GetMapping
-    ResponseEntity<taskEntity> getTaskById(int id) {
+    ResponseEntity<taskEntity> getTaskById(@PathVariable("id") Integer id) {
         var task = taskServices.getTaskById(id);
         if (task == null) {
             return ResponseEntity.notFound().build();
@@ -37,7 +38,7 @@ public class taskController {
     }
 
     @PostMapping
-    public ResponseEntity<taskEntity> addTask(@RequestBody createTaskDTO body) {
+    public ResponseEntity<taskEntity> addTask(@RequestBody createTaskDTO body) throws ParseException {
         var task = taskServices.addTask(body.getTitle(), body.getDescription(), body.getDeadline());
 
         return ResponseEntity.ok(task);
