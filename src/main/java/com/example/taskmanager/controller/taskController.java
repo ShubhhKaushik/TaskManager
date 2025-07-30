@@ -2,6 +2,8 @@ package com.example.taskmanager.controller;
 
 
 import com.example.taskmanager.dtos.createTaskDTO;
+import com.example.taskmanager.dtos.errorResponseDTO;
+import com.example.taskmanager.dtos.updateTaskDTO;
 import com.example.taskmanager.entities.taskEntity;
 import com.example.taskmanager.services.taskServices;
 import org.springframework.http.HttpStatus;
@@ -42,5 +44,24 @@ public class taskController {
         var task = taskServices.addTask(body.getTitle(), body.getDescription(), body.getDeadline());
 
         return ResponseEntity.ok(task);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<taskEntity> updateTask(@PathVariable("id") Integer id,@RequestBody updateTaskDTO body) throws ParseException {
+        var task = taskServices.updateTask(id, body.getDescription(), body.getDeadline(), body.getCompleted());
+        if (task == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(task);
+
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<errorResponseDTO> handleErrors(Exception e) {
+        if (e instanceof ParseException) {
+        return ResponseEntity.badRequest().body(new errorResponseDTO("Invalid Date Format"));
+    }
+        e.printStackTrace();
+        return  ResponseEntity.internalServerError().body(new errorResponseDTO("Invalid Server Error"));
     }
 }
